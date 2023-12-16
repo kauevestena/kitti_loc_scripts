@@ -42,17 +42,22 @@ def txtfile_list_to_geopandas(inputpath, crs='EPSG:4326'):
         'numsats': [],
         'posmode': [],
         'velmode': [],
-        'orimode': []
+        'orimode': [],
+        'capture' : [],
     }
 
     for txtfile in listdir_fullpath(inputpath):
         parsed = read_txt(txtfile)
+
+        filename = get_last_part(txtfile).split('.')[0]
 
         lat, lon, *data = parsed
         coords = Point(lon, lat)
         data_dict['geometry'].append(coords)
         for i, value in enumerate(data):
             data_dict[list(data_dict.keys())[i + 1]].append(value)
+
+        data_dict['capture'].append(filename)
 
     return gpd.GeoDataFrame(data_dict, geometry='geometry', crs=crs)
 
